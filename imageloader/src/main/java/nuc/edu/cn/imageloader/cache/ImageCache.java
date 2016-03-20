@@ -1,5 +1,6 @@
 package nuc.edu.cn.imageloader.cache;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 /**
@@ -8,4 +9,5 @@ import android.graphics.Bitmap;
 public interface ImageCache {
     void put(String url,Bitmap bmp);
     Bitmap get(String url);
+    void setContext(Context context);
 }

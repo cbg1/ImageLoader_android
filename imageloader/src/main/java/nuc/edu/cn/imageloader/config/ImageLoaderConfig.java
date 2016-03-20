@@ -1,25 +1,33 @@
 package nuc.edu.cn.imageloader.config;
 
+import android.content.Context;
+
 import nuc.edu.cn.imageloader.cache.ImageCache;
 import nuc.edu.cn.imageloader.cache.MemoryCache;
 
 /**
  * Created by weifucheng on 2016/3/20.
- * 这个类中的配置属性不应该public，可能会导致用户错误使用
  * 建造者模式
  */
 public class ImageLoaderConfig {
-    private ImageCache imageCache=new MemoryCache();
-    private DisplayConfig displayConfig=new DisplayConfig();
-    private int threadCount=Runtime.getRuntime().availableProcessors()+1;
-
+    public ImageCache imageCache=new MemoryCache();
+    public DisplayConfig displayConfig=new DisplayConfig();
+    public int threadCount=Runtime.getRuntime().availableProcessors()+1;
+    public Context context;
     public ImageCache getImageCache() {
         return imageCache;
     }
 
-    public void setImageCache(ImageCache imageCache) {
-        if (imageCache!=null)
-        this.imageCache = imageCache;
+    public void setImageCache(Class<? extends ImageCache> imageCache) {
+        try {
+            ImageCache IC=imageCache.newInstance();
+            IC.setContext(context);
+            this.imageCache=IC;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setThreadCount(int threadCount) {

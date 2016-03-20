@@ -1,5 +1,6 @@
 package nuc.edu.cn.imageloader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -11,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import nuc.edu.cn.imageloader.cache.ImageCache;
-import nuc.edu.cn.imageloader.cache.MemoryCache;
 import nuc.edu.cn.imageloader.config.ImageLoaderConfig;
 
 /**
@@ -20,19 +20,16 @@ import nuc.edu.cn.imageloader.config.ImageLoaderConfig;
 public class ImageLoader {
     private ImageLoader(){}
     private ImageLoaderConfig mConfig;
-    ImageCache mImageCache=new MemoryCache();
     ExecutorService mExecutorService= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public void displayImage(final String url,final ImageView imageView){
-        Bitmap bitmap=mImageCache.get(url);
+        Bitmap bitmap=mConfig.imageCache.get(url);
         if(bitmap!=null){
             imageView.setImageBitmap(bitmap);
             return;
         }
         imageView.setTag(url);
+        imageView.setImageBitmap(BitmapFactory.decodeResource(mConfig.context.getResources(),mConfig.displayConfig.loadingResId));
         subitmLoadRequest(url, imageView);
-    }
-    public void setImageCache(ImageCache imageCache){
-        this.mImageCache=imageCache;
     }
     private void subitmLoadRequest(final String url, final ImageView imageView) {
         mExecutorService.submit(new Runnable() {
@@ -45,7 +42,7 @@ public class ImageLoader {
                 if(imageView.getTag().equals(url)){
                     imageView.setImageBitmap(bitmap);
                 }
-                mImageCache.put(url,bitmap);
+                mConfig.imageCache.put(url, bitmap);
             }
         });
     }
@@ -72,9 +69,19 @@ public class ImageLoader {
     private static class ImageLoaderHolder{
         private static final ImageLoader sImageLoader=new ImageLoader();
     }
+
+    /**
+     * 这个地方不使用单例模式，保持Builder的多样性
+     */
     public static class Builder{
         ImageLoaderConfig iConfig=new ImageLoaderConfig();
-        public ImageLoader.Builder setImageCache(ImageCache imageCache){
+        public static Builder getBuilder(Context context){
+            return new Builder(context);
+        }
+        public Builder(Context context){
+                iConfig.context=context;
+        }
+        public ImageLoader.Builder setImageCache(Class<? extends ImageCache> imageCache){
                 iConfig.setImageCache(imageCache);
                 return this;
         }

@@ -1,5 +1,6 @@
 package nuc.edu.cn.imageloader.cache;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.LruCache;
@@ -31,5 +32,9 @@ public class MemoryCache implements ImageCache {
     public Bitmap get(String url){
         Log.d(TAG,url+"come from memory");
         return mImageCache.get(url);
+    }
+
+    @Override
+    public void setContext(Context context) {
     }
 }

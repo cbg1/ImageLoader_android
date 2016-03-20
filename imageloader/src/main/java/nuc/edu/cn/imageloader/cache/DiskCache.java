@@ -19,10 +19,10 @@ public class DiskCache implements ImageCache {
     private static final String TAG="DiskCache";
     private static String cacheDir=null;
     private Context mContext;
-    public DiskCache(Context context){
-            mContext=context;
+    @Override
+    public void setContext(Context context){
+         mContext=context;
     }
-
     private void initFile() {
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
             cacheDir=mContext.getExternalCacheDir().getPath();

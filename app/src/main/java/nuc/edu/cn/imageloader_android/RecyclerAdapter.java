@@ -9,19 +9,18 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import nuc.edu.cn.imageloader.cache.DoubleCache;
 import nuc.edu.cn.imageloader.ImageLoader;
+import nuc.edu.cn.imageloader.cache.DoubleCache;
 
 /**
  * Created by weifucheng on 2016/3/19.
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<String> mData;
-    private ImageLoader mImageLoader;
+    private Context mContext;
     public RecyclerAdapter(List<String> data,Context context){
         mData=data;
-        mImageLoader=ImageLoader.getInstance();
-        mImageLoader.setImageCache(new DoubleCache(context));
+        mContext=context;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,7 +31,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder myholder= (ViewHolder) holder;
-        mImageLoader.displayImage(mData.get(position),myholder.imageView);
+        ImageLoader.Builder builder=new ImageLoader.Builder(mContext);
+        builder.setImageCache(DoubleCache.class).setLoadingPlaceholder(R.drawable.loading).create()
+                .displayImage(mData.get(position),myholder.imageView);
     }
 
 
