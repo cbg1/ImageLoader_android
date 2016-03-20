@@ -11,10 +11,8 @@ import android.util.LruCache;
 public class MemoryCache implements ImageCache {
     private static final String TAG="MemoryCache";
     LruCache<String,Bitmap> mImageCache;
-    public MemoryCache(){
-            initImageCache();
-    }
-    private void initImageCache(){
+    @Override
+    public void init(){
         final int maxMemory= (int) (Runtime.getRuntime().maxMemory()/1024);
         final int CacheSize=maxMemory/4;
         mImageCache=new LruCache<String,Bitmap>(CacheSize){
@@ -36,5 +34,6 @@ public class MemoryCache implements ImageCache {
 
     @Override
     public void setContext(Context context) {
+
     }
 }

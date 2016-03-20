@@ -1,7 +1,9 @@
 package nuc.edu.cn.imageloader.config;
 
 import android.content.Context;
+import android.util.Log;
 
+import nuc.edu.cn.imageloader.cache.CacheManager;
 import nuc.edu.cn.imageloader.cache.ImageCache;
 import nuc.edu.cn.imageloader.cache.MemoryCache;
 
@@ -10,24 +12,19 @@ import nuc.edu.cn.imageloader.cache.MemoryCache;
  * 建造者模式
  */
 public class ImageLoaderConfig {
+    private static final String TAG="ImageLoaderConfig";
     public ImageCache imageCache=new MemoryCache();
     public DisplayConfig displayConfig=new DisplayConfig();
     public int threadCount=Runtime.getRuntime().availableProcessors()+1;
     public Context context;
-    public ImageCache getImageCache() {
-        return imageCache;
-    }
-
     public void setImageCache(Class<? extends ImageCache> imageCache) {
-        try {
-            ImageCache IC=imageCache.newInstance();
-            IC.setContext(context);
-            this.imageCache=IC;
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        ImageCache IC= CacheManager.getCache(imageCache);
+        if(IC==null){
+            Log.d(TAG,"IC为空============");
         }
+        Log.d(TAG,IC.getClass().getName()+"====");
+        IC.setContext(context);
+        this.imageCache=IC;
     }
 
     public void setThreadCount(int threadCount) {

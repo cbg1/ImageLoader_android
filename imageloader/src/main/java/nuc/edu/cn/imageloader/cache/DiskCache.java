@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import nuc.edu.cn.imageloader.disklrucache.DiskLruCache;
 import nuc.edu.cn.imageloader.utils.CloseUtils;
 
 /**
@@ -19,11 +20,15 @@ public class DiskCache implements ImageCache {
     private static final String TAG="DiskCache";
     private static String cacheDir=null;
     private Context mContext;
+    private DiskLruCache mDiskLruCache;
+    private static final int MB=1024*1024*5;
     @Override
     public void setContext(Context context){
          mContext=context;
+
     }
-    private void initFile() {
+    @Override
+    public void init() {
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
             cacheDir=mContext.getExternalCacheDir().getPath();
             Log.d(TAG,"have SD");
@@ -57,7 +62,6 @@ public class DiskCache implements ImageCache {
     @Override
     public Bitmap get(String url) {
         Log.d(TAG, cacheDir+url+"come from Disk");
-        if(null==cacheDir) initFile();
         return BitmapFactory.decodeFile(cacheDir+"/"+url);
     }
 

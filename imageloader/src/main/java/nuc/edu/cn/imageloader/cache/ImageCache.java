@@ -10,4 +10,5 @@ public interface ImageCache {
     void put(String url,Bitmap bmp);
     Bitmap get(String url);
     void setContext(Context context);
+    void init();
 }

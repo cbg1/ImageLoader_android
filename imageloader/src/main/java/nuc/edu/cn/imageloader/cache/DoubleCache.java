@@ -9,14 +9,18 @@ import android.graphics.Bitmap;
 public class DoubleCache implements ImageCache {
     MemoryCache mMemoryCache=null;
     DiskCache mDiskCache=null;
-    public DoubleCache(){
-        mMemoryCache=new MemoryCache();
-        mDiskCache=new DiskCache();
-    }
+
     @Override
     public void setContext(Context context){
         mDiskCache.setContext(context);
     }
+
+    @Override
+    public void init() {
+        mMemoryCache= (MemoryCache) CacheManager.getCache(MemoryCache.class);
+        mDiskCache= (DiskCache) CacheManager.getCache(DiskCache.class);
+    }
+
     @Override
     public void put(String url, Bitmap bmp) {
         mMemoryCache.put(url,bmp);
